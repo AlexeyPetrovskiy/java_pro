@@ -15,10 +15,10 @@ public class ContextConfig {
     public Connection connectionPoll() throws SQLException {
         HikariConfig config = new HikariConfig();
         HikariDataSource ds;
-        config.setJdbcUrl( "jdbc:postgresql://stusbp-01pgp001.innodev.local:5432/file_transfer" );
-        config.setSchema("file_transfer");
-        config.setUsername( "file_transfer_admin" );
-        config.setPassword( "TUw.N2RxLAp3gHPg5UVJP3i2jOKqe1UW9Rv7xEuebIWxA2MDMRFc7ZzKXIxHsDPNGw.lyoIDQ9j7mHjz-ZtnyHp7iV25fdw3eg" );
+        config.setJdbcUrl( "jdbc:postgresql://host:5432/test" );
+        config.setSchema("test");
+        config.setUsername( "test_admin" );
+        config.setPassword( "password" );
         config.addDataSourceProperty( "cachePrepStmts" , "true" );
         config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
         config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
