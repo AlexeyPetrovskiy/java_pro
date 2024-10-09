@@ -9,6 +9,5 @@ public class Task implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Thread - " + Thread.currentThread().getName());
     }
 }

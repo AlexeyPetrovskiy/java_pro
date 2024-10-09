@@ -1,12 +1,15 @@
 package ru.innotech.education;
+
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomThreadPool {
 
     private LinkedList<Runnable> listTask = new LinkedList<>();
     private final Worker[] workers;
-    private boolean isShutdown;
+    private AtomicBoolean isShutdown = new AtomicBoolean();
 
     public CustomThreadPool(final int numOfThreads) {
         workers = new Worker[numOfThreads];
@@ -16,36 +19,54 @@ public class CustomThreadPool {
         }
     }
 
-    private synchronized Runnable getTask() {
-        Iterator<Runnable> iterator = listTask.iterator();
-            if (iterator.hasNext()){
-                Runnable task = iterator.next();
-                iterator.remove();
-                return task;
-             } else {
-                return null;
+    private synchronized Runnable getTask() throws InterruptedException {
+        Runnable task = null;
+        synchronized (listTask) {
+            try {
+                task = listTask.getFirst();
+                listTask.removeFirst();
+            } catch (NoSuchElementException e) {
+                //ловим ошибку если нет задач на исполнение
+                if (!isShutdown.get()) {
+                    //если мы еще продолжаем работу, не был вызван shutdown, то ждем
+                    listTask.wait();
+                    //как только дождались, берем задачу в работу
+                    task = listTask.getFirst();
+                    listTask.removeFirst();
+                }
             }
+        }
+        return task;
     }
 
-    public synchronized void execute(final Runnable task) {
-        if (isShutdown){
+    public void execute(final Runnable task) {
+        if (isShutdown.get()) {
             throw new IllegalStateException();
         }
-        listTask.add(task);
+        synchronized (listTask) {
+            listTask.add(task);
+            //добавили таску, сообщаем ожидаемумому потоку то можно взять в работу
+            listTask.notify();
+        }
     }
 
     public void shutdown() {
-        isShutdown = true;
+        isShutdown.set(true);
+
         for (int i = 0; i < workers.length; i++) {
             workers[i].shutdownSignal = true;
         }
+        synchronized (listTask) {
+            //чтобы потоки не висели в ожидании после того как вызвали shutdown,
+            // сообщаем что нужно продолжить
+            listTask.notify();
+        }
     }
 
-    public boolean awaitTermination() {
-        for (Thread thread:workers) {
-            if (thread.isAlive()){
-                return false;
-            }
+    public boolean awaitTermination() throws InterruptedException {
+        for (Thread thread : workers) {
+            //дожидаемся исполнения задач потоками
+            thread.join();
         }
         return true;
     }
@@ -56,13 +77,17 @@ public class CustomThreadPool {
 
         @Override
         public void run() {
-            while(true && !shutdownSignal) {
-                taskToPerform = getTask();
-                if (taskToPerform != null) {
-                    taskToPerform.run();
+            while (true && !shutdownSignal) {
+                try {
+                    taskToPerform = getTask();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-                if(shutdownSignal) {
+                //если за время ожидания прилетел сигнал о завершении, то приостанавливаем поток
+                if (shutdownSignal) {
                     Thread.currentThread().interrupt();
+                } else {
+                    taskToPerform.run();
                 }
             }
         }
