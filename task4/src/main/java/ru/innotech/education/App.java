@@ -1,25 +1,17 @@
 package ru.innotech.education;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.sql.SQLException;
 
 /**
- * Тестовое задание номер 4
+ * Тестовое задание номер 4-5
  */
-@ComponentScan
+@SpringBootApplication
 public class App {
 
     public static void main(String[] args) throws SQLException {
-
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(App.class);
-        UserService userService = context.getBean(UserService.class);
-
-        userService.putUser(10, "user10");
-        System.out.println(userService.getUser(10));
-        userService.deleteUser(10);
-
-        userService.getUsers().stream().forEach(System.out::println);
+        SpringApplication.run(App.class, args);
     }
 }

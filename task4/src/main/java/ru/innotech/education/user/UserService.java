@@ -1,4 +1,4 @@
-package ru.innotech.education;
+package ru.innotech.education.user;
 
 import org.springframework.stereotype.Service;
 
