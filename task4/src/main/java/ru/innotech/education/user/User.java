@@ -1,9 +1,9 @@
-package ru.innotech.education;
+package ru.innotech.education.user;
 
 public class User {
 
-    Long id;
-    String username;
+    private Long id;
+    private String username;
 
     public void setId(Long id) {
         this.id = id;
