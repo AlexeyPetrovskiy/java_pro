@@ -12,6 +12,8 @@
         <module>task1</module>
         <module>task2</module>
         <module>task3</module>
+        <module>product-service</module>
+        <module>payments-core</module>
     </modules>
 
     <properties>
