@@ -2,9 +2,9 @@ package ru.innotech.education.dto;
 
 public class PaymentsInfo {
     private long id_user;
-    private long amount;
+    private Double amount;
 
-    public PaymentsInfo(long id_user, long amount) {
+    public PaymentsInfo(long id_user, double amount) {
         this.id_user = id_user;
         this.amount = amount;
     }
@@ -20,11 +20,11 @@ public class PaymentsInfo {
         this.id_user = id_user;
     }
 
-    public long getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 }

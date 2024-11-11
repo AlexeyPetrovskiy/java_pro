@@ -16,7 +16,7 @@ public class LimitController {
 
    /* Получение лимита пользователя */
     @GetMapping(value = "/limit/{id}")
-    public Long getUserLimit(@PathVariable long id) {
+    public Double getUserLimit(@PathVariable long id) {
         return service.getLimitById(id);
     }
 
@@ -35,7 +35,7 @@ public class LimitController {
 
     /* Изменение дневного лимита */
     @PostMapping(value = "/changeLimit")
-    public void changeLimit(@PathVariable long limit) throws Exception {
+    public void changeLimit(@PathVariable Double limit) throws Exception {
         service.setLimit(limit);
     }
 

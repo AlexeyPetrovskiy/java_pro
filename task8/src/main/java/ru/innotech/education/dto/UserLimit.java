@@ -14,9 +14,9 @@ public class UserLimit implements Serializable {
     @Column(name = "id_user", nullable = false)
     private long id_user;
     @Column(name = "\"limit\"", nullable = false)
-    private long limit;
+    private double limit;
 
-    public UserLimit(long id_user, long limit) {
+    public UserLimit(long id_user, double limit) {
         this.id_user = id_user;
         this.limit = limit;
     }
@@ -32,11 +32,11 @@ public class UserLimit implements Serializable {
         this.id_user = id_user;
     }
 
-    public long getLimit() {
+    public double getLimit() {
         return limit;
     }
 
-    public void setLimit(long limit) {
+    public void setLimit(double limit) {
         this.limit = limit;
     }
 }
